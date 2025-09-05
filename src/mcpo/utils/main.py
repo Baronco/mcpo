@@ -114,7 +114,11 @@ def _process_schema_property(
                 # TODO: Find the exact type hint for the $ref.
                 return Any, Field(default=None, description="")
         ref = ref.split("/")[-1]
-        assert ref in schema_defs, "Custom field not found"
+#      assert ref in schema_defs, "Custom field not found"
+        if not schema_defs or ref not in schema_defs:
+            logger.warning(f"Referencia $ref no resuelta: {ref}. Se usará Any.")
+            return Any, Field(default=None, description="Referencia $ref no resuelta")
+        
         prop_schema = schema_defs[ref]
 
     prop_type = prop_schema.get("type")
